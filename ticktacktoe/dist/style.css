@@ -1,0 +1,25 @@
+<style>
+  .game-board {
+    display: none;
+    margin: 0 auto;
+    grid-gap: 5px; /* Add gap between grid cells */
+  }
+  .row {
+    display: flex; /* Use flexbox for rows */
+    justify-content: center; /* Center the cells horizontally */
+  }
+  .cell {
+    width: 100px;
+    height: 100px;
+    font-size: 2rem;
+    margin: 5px; /* Add margin to each cell */
+    background-color: red; /* Set the background color to red */
+    color: white; /* Set the text color to white for better visibility */
+    border: none; /* Remove the border */
+  }
+  .game-info {
+    display: none;
+    text-align: center;
+    margin-top: 20px;
+  }
+</style>

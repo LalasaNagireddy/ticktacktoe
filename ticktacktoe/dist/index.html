@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>CodePen - TickTackToe</title>
+  <link rel="stylesheet" href="./style.css">
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tic-Tac-Toe Game</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+  <style>
+    .game-board {
+      display: none;
+      margin: 0 auto;
+    }
+    .cell {
+      width: 100px;
+      height: 100px;
+      font-size: 2rem;
+    }
+    .game-info {
+      display: none;
+      text-align: center;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="game-intro text-center">
+    <h2>Tic-Tac-Toe Game</h2>
+    <p>Click on a cell to make your move. The first player to align three marks wins!</p>
+    <div class="game-mode-selection">
+      <button id="twoPlayerMode" class="btn btn-primary">Two Player Mode</button>
+      <button id="vsComputerMode" class="btn btn-secondary">Vs Computer Mode</button>
+    </div>
+  </div>
+  <div class="game-board">
+    <div class="row">
+      <button class="cell btn btn-light" data-cell></button>
+      <button class="cell btn btn-light" data-cell></button>
+      <button class="cell btn btn-light" data-cell></button>
+    </div>
+    <div class="row">
+      <button class="cell btn btn-light" data-cell></button>
+      <button class="cell btn btn-light" data-cell></button>
+      <button class="cell btn btn-light" data-cell></button>
+    </div>
+    <div class="row">
+      <button class="cell btn btn-light" data-cell></button>
+      <button class="cell btn btn-light" data-cell></button>
+      <button class="cell btn btn-light" data-cell></button>
+    </div>
+  </div>
+  <div class="game-info">
+    <button id="restartButton" class="btn btn-warning">Restart Game</button>
+    <h3 id="gameStatus"></h3>
+  </div>
+
+  <script>
+    const cells = document.querySelectorAll('.cell');
+    const gameStatus = document.getElementById('gameStatus');
+    const restartButton = document.getElementById('restartButton');
+    const twoPlayerModeButton = document.getElementById('twoPlayerMode');
+    const vsComputerModeButton = document.getElementById('vsComputerMode');
+    const gameBoard = document.querySelector('.game-board');
+    const gameInfo = document.querySelector('.game-info');
+    let currentPlayer = 'X';
+    let gameActive = true;
+    let gameState = ['', '', '', '', '', '', '', '', ''];
+    let isTwoPlayerMode = true;
+
+    function handleClick(event) {
+      const cell = event.target;
+      const cellIndex = Array.from(cells).indexOf(cell);
+
+      if (gameState[cellIndex] !== '' || !gameActive) {
+        return;
+      }
+
+      gameState[cellIndex] = currentPlayer;
+      cell.innerHTML = currentPlayer === 'X' ? '<i class="fas fa-times"></i>' : '<i class="far fa-circle"></i>';
+
+      if (checkWinner(currentPlayer)) {
+        gameStatus.textContent = `${currentPlayer} wins!`;
+        gameActive = false;
+        return;
+      }
+
+      if (gameState.every(cell => cell !== '')) {
+        gameStatus.textContent = 'Draw!';
+        gameActive = false;
+        return;
+      }
+
+      currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+      gameStatus.textContent = `Player ${currentPlayer}'s turn`;
+
+      if (!isTwoPlayerMode && currentPlayer === 'O') {
+        computerMove();
+      }
+    }
+
+    function checkWinner(player) {
+      const winningCombinations = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6]
+      ];
+
+      return winningCombinations.some(combination => {
+        return combination.every(index => {
+          return gameState[index] === player;
+        });
+      });
+    }
+
+    function restartGame() {
+      gameState = ['', '', '', '', '', '', '', '', ''];
+      gameActive = true;
+      currentPlayer = 'X';
+      gameStatus.textContent = `Player ${currentPlayer}'s turn`;
+      cells.forEach(cell => {
+        cell.innerHTML = '';
+      });
+    }
+
+    function computerMove() {
+      const emptyCells = gameState.map((cell, index) => cell === '' ? index : null).filter(index => index !== null);
+      if (emptyCells.length > 0) {
+        const randomCellIndex = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+        gameState[randomCellIndex] = currentPlayer;
+        cells[randomCellIndex].innerHTML = '<i class="far fa-circle"></i>';
+
+        if (checkWinner(currentPlayer)) {
+          gameStatus.textContent = `${currentPlayer} wins!`;
+          gameActive = false;
+          return;
+        }
+
+        if (gameState.every(cell => cell !== '')) {
+          gameStatus.textContent = 'Draw!';
+          gameActive = false;
+          return;
+        }
+
+        currentPlayer = 'X';
+        gameStatus.textContent = `Player ${currentPlayer}'s turn`;
+      }
+    }
+
+    function startGame(mode) {
+      isTwoPlayerMode = mode;
+      document.querySelector('.game-mode-selection').style.display = 'none';
+      gameBoard.style.display = 'block';
+      gameInfo.style.display = 'block';
+      restartGame();
+    }
+
+    twoPlayerModeButton.addEventListener('click', () => startGame(true));
+    vsComputerModeButton.addEventListener('click', () => startGame(false));
+    cells.forEach(cell => {
+      cell.addEventListener('click', handleClick);
+    });
+
+    restartButton.addEventListener('click', restartGame);
+  </script>
+</body>
+</html>
+<!-- partial -->
+  <script  src="./script.js"></script>
+
+</body>
+</html>
